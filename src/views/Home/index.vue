@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>Home</p>
+    <p class="home">Home</p>
   </div>
 </template>
 
@@ -11,4 +11,7 @@ export default {
 </script>
 
 <style lang='less'>
+.home {
+  background: pink;
+}
 </style>
