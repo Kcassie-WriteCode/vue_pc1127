@@ -42,7 +42,7 @@ export default {
 .footer ul li {
   padding: 0 20px;
   display: block;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid black;
   margin: 15px 0;
 }
 .footer div {

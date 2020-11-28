@@ -23,9 +23,9 @@
       </div>
     </div>
     <div class="header-button">
-      <router-link to='/home'><img src="./images/logo.png" /></router-link>
+      <router-link to="/home"><img src="./images/logo.png" /></router-link>
       <form>
-        <input type="text" />
+        <input type="text" v-model="searchText" />
         <button @click="search">搜索</button>
       </form>
     </div>
@@ -35,9 +35,18 @@
 <script>
 export default {
   name: "Header",
+  data() {
+    return {
+      //搜索的内容
+      searchText: "",
+    };
+  },
   methods: {
     search() {
-      this.$router.push("/search");
+      const { searchText } = this;
+      const params = searchText ? `/${searchText}` : "";
+      const location = `/search` + params;
+      this.$router.push(location);
     },
   },
 };
@@ -56,10 +65,10 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
- .header-top-container a:hover {
+.header-top-container a:hover {
   text-decoration: none;
   color: #ea4a36;
-} 
+}
 .header-top-container-left {
   display: flex;
   justify-content: space-between;
@@ -90,7 +99,7 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
-.header-button form{
+.header-button form {
   display: flex;
   align-items: center;
 }
@@ -104,7 +113,7 @@ export default {
 .header-button button {
   width: 68px;
   height: 32px;
-  background:  #ea4a36;
+  background: #ea4a36;
   border: none;
   color: #fff;
 }
