@@ -24,9 +24,9 @@
     </div>
     <div class="header-button">
       <router-link to="/home"><img src="./images/logo.png" /></router-link>
-      <form>
+      <form @submit.prevent="search">
         <input type="text" v-model="searchText" />
-        <button @click="search">搜索</button>
+        <button>搜索</button>
       </form>
     </div>
   </div>
@@ -43,9 +43,18 @@ export default {
   },
   methods: {
     search() {
+      /**
+       搜索功能
+       * */
       const { searchText } = this;
-      const params = searchText ? `/${searchText}` : "";
-      const location = `/search` + params;
+      const location = {
+        name: "search",
+      };
+      if (searchText) {
+        location.params = {
+          searchText,
+        };
+      }
       this.$router.push(location);
     },
   },
