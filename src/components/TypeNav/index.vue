@@ -54,18 +54,21 @@
 </template>
 
 <script>
-import { getBaseCategoryList } from "@api/home";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "TypeNav",
-  data() {
-    return {
-      CategoryList: [],
-    };
+  computed: {
+    ...mapState({
+      testCount: (state) => state.testCount,
+      CategoryList: (state) => state.home.CategoryList,
+    }),
   },
-  async mounted() {
+  methods: {
+    ...mapActions(["getCategoryList"]),
+  },
+  mounted() {
     //挂载成功，获取数据
-    const result = await getBaseCategoryList();
-    this.CategoryList = result.slice(0, 15);
+    this.getCategoryList();
   },
 };
 </script>
