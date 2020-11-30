@@ -1,12 +1,8 @@
 <template>
   <!-- 商品分类导航 -->
   <div class="type-nav">
-    <div
-      class="container"
-      @mouseenter="isSearchShow = true"
-      @mouseleave="isSearchShow = false"
-    >
-      <h2 class="all">全部商品分类</h2>
+    <div class="container" @mouseleave="isSearchShow = false">
+      <h2 class="all" @mouseenter="isSearchShow = true">全部商品分类</h2>
       <nav class="nav">
         <a href="###">服装城</a>
         <a href="###">美妆馆</a>
@@ -22,23 +18,23 @@
           <div class="all-sort-list2" @click="goSearch">
             <div
               class="item bo"
-              v-for="Category in CategoryList"
-              :key="Category.categoryId"
+              v-for="category in categoryList"
+              :key="category.categoryId"
             >
               <!-- 一级目录Category -->
               <h3>
                 <a
-                  :data-categoryName="Category.categoryName"
-                  :data-categoryId="Category.categoryId"
+                  :data-categoryName="category.categoryName"
+                  :data-categoryId="category.categoryId"
                   :data-categoryType="1"
-                  >{{ Category.categoryName }}</a
+                  >{{ category.categoryName }}</a
                 >
               </h3>
               <div class="item-list clearfix">
                 <div class="subitem">
                   <dl
                     class="fore"
-                    v-for="child in Category.categoryChild"
+                    v-for="child in category.categoryChild"
                     :key="child.categoryId"
                   >
                     <!-- 二级目录 -->
@@ -87,7 +83,7 @@ export default {
   computed: {
     ...mapState({
       testCount: (state) => state.testCount,
-      CategoryList: (state) => state.home.CategoryList,
+      categoryList: (state) => state.home.categoryList,
     }),
   },
   methods: {
@@ -114,6 +110,7 @@ export default {
     },
   },
   mounted() {
+    if (this.categoryList.length) return;
     //挂载成功，获取数据
     this.getCategoryList();
   },
