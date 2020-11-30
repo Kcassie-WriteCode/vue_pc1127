@@ -2,7 +2,7 @@
   {
     "id|+1": 1,
     "name": "@ctitle(4)",
-    "keywords|4-6": ["@ctitle(4,6)"],
+    "keywords|2": ["@ctitle(4,6)"],
     "imgUrl": "@image('200x200','@color')",
     "navList|4-6": [
       {
@@ -13,7 +13,7 @@
     "carouselList|3": [
       {
         "id|+1": 1,
-        "imgUrl": "@image('320x320','@color')"
+        "imgUrl": "@image('320x360','@color')"
       }
     ],
     "recommendList|4": ["@image('200x200','@color')"],

@@ -2,13 +2,17 @@
   <div class="floor">
     <div class="py-container">
       <div class="title clearfix">
-        <h3 class="fl">家用电器</h3>
+        <h3 class="fl">{{ floor.name }}</h3>
         <div class="fr">
-          <ul class="nav-tabs clearfix">
+          <ul
+            class="nav-tabs clearfix"
+            v-for="nav in floor.navList"
+            :key="nav.text"
+          >
             <li class="active">
-              <a href="#tab1" data-toggle="tab">热门</a>
+              <a href="#tab1" data-toggle="tab">{{ nav.text }}</a>
             </li>
-            <li>
+            <!-- <li>
               <a href="#tab2" data-toggle="tab">大家电</a>
             </li>
             <li>
@@ -25,7 +29,7 @@
             </li>
             <li>
               <a href="#tab7" data-toggle="tab">高端电器</a>
-            </li>
+            </li> -->
           </ul>
         </div>
       </div>
@@ -33,21 +37,29 @@
         <div class="tab-pane">
           <div class="floor-1">
             <div class="blockgary">
-              <ul class="jd-list">
-                <li>节能补贴</li>
-                <li>4K电视</li>
+              <ul
+                class="jd-list"
+                v-for="keyword in floor.keywords"
+                :key="keyword.index"
+              >
+                <li>{{ keyword }}</li>
+                <!-- <li>4K电视</li>
                 <li>空气净化器</li>
                 <li>IH电饭煲</li>
                 <li>滚筒洗衣机</li>
-                <li>电热水器</li>
+                <li>电热水器</li> -->
               </ul>
-              <img src="./images/floor-1-1.png" />
+              <img :src="floor.imgUrl" />
             </div>
             <div class="floorBanner">
               <div class="swiper-container" id="floor1Swiper">
-                <div class="swiper-wrapper">
+                <div
+                  class="swiper-wrapper"
+                  v-for="carousel in floor.carouselList"
+                  :key="carousel.id"
+                >
                   <div class="swiper-slide">
-                    <img src="./images/floor-1-b01.png" />
+                    <img :src="carousel.imgUrl" />
                   </div>
                   <!-- <div class="swiper-slide">
                       <img src="./images/floor-1-b02.png">
@@ -74,7 +86,7 @@
               </div>
             </div>
             <div class="split center">
-              <img src="./images/floor-1-4.png" />
+              <img :src="floor.bigImg" />
             </div>
             <div class="split">
               <span class="floor-x-line"></span>
@@ -93,20 +105,9 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
 export default {
   name: "Floor",
-  computed: {
-    ...mapState({
-      floors: (state) => state.home.floors,
-    }),
-  },
-  methods: {
-    ...mapActions(["getFloors"]),
-  },
-  mounted() {
-    this.getFloors();
-  },
+  props: ["floor"],
 };
 </script>
 
@@ -138,19 +139,18 @@ export default {
           li {
             float: left;
             line-height: 18px;
-
             a {
               padding-top: 1px;
               font-weight: 400;
               background-color: #fff;
-
               &::after {
                 content: "|";
                 padding: 0 10px;
-              }
+              } 
             }
+            
 
-            &:nth-child(7) {
+            &:nth-child(6) {
               a {
                 &::after {
                   content: "";
@@ -205,6 +205,7 @@ export default {
           .floorBanner {
             width: 330px;
             height: 100%;
+            overflow: hidden;
           }
 
           .split {
