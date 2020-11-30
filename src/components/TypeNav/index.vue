@@ -14,7 +14,7 @@
         <a href="###">秒杀</a>
       </nav>
       <div class="sort">
-        <div class="all-sort-list2">
+        <div class="all-sort-list2" @click="search">
           <div
             class="item bo"
             v-for="Category in CategoryList"
@@ -22,7 +22,12 @@
           >
             <!-- 一级目录Category -->
             <h3>
-              <a href="">{{ Category.categoryName }}</a>
+              <a
+                :data-categoryName="Category.categoryName"
+                :data-categoryId="Category.categoryId"
+                :data-categoryType="1"
+                >{{ Category.categoryName }}</a
+              >
             </h3>
             <div class="item-list clearfix">
               <div class="subitem">
@@ -33,14 +38,24 @@
                 >
                   <!-- 二级目录 -->
                   <dt>
-                    <a href="">{{ child.categoryName }}</a>
+                    <a
+                      :data-categoryName="child.categoryName"
+                      :data-categoryId="child.categoryId"
+                      :data-categoryType="2"
+                      >{{ child.categoryName }}</a
+                    >
                   </dt>
                   <dd>
                     <em
-                      v-for="grandCategoryChild in child.categoryChild"
-                      :key="grandCategoryChild.categoryId"
+                      v-for="grandChild in child.categoryChild"
+                      :key="grandChild.categoryId"
                     >
-                      <a href="">{{ grandCategoryChild.categoryName }}</a>
+                      <a
+                        :data-categoryName="grandChild.categoryName"
+                        :data-categoryId="grandChild.categoryId"
+                        :data-categoryType="3"
+                        >{{ grandChild.categoryName }}</a
+                      >
                     </em>
                   </dd>
                 </dl>
@@ -65,6 +80,18 @@ export default {
   },
   methods: {
     ...mapActions(["getCategoryList"]),
+    search(e) {
+      // console.log(e.target.dataset);
+      const { categoryname, categoryid, categorytype } = e.target.dataset;
+      if (!categoryname) return;
+      this.$router.push({
+        name: "search",
+        query: {
+          categoryName: categoryname,
+          [`category${categorytype}Id`]: categoryid,
+        },
+      });
+    },
   },
   mounted() {
     //挂载成功，获取数据
