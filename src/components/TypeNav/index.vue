@@ -1,7 +1,11 @@
 <template>
   <!-- 商品分类导航 -->
   <div class="type-nav">
-    <div class="container">
+    <div
+      class="container"
+      @mouseenter="isSearchShow = true"
+      @mouseleave="isSearchShow = false"
+    >
       <h2 class="all">全部商品分类</h2>
       <nav class="nav">
         <a href="###">服装城</a>
@@ -13,57 +17,59 @@
         <a href="###">有趣</a>
         <a href="###">秒杀</a>
       </nav>
-      <div class="sort">
-        <div class="all-sort-list2" @click="search">
-          <div
-            class="item bo"
-            v-for="Category in CategoryList"
-            :key="Category.categoryId"
-          >
-            <!-- 一级目录Category -->
-            <h3>
-              <a
-                :data-categoryName="Category.categoryName"
-                :data-categoryId="Category.categoryId"
-                :data-categoryType="1"
-                >{{ Category.categoryName }}</a
-              >
-            </h3>
-            <div class="item-list clearfix">
-              <div class="subitem">
-                <dl
-                  class="fore"
-                  v-for="child in Category.categoryChild"
-                  :key="child.categoryId"
+      <transition name="search">
+        <div class="sort" v-show="isHomeShow || isSearchShow">
+          <div class="all-sort-list2" @click="goSearch">
+            <div
+              class="item bo"
+              v-for="Category in CategoryList"
+              :key="Category.categoryId"
+            >
+              <!-- 一级目录Category -->
+              <h3>
+                <a
+                  :data-categoryName="Category.categoryName"
+                  :data-categoryId="Category.categoryId"
+                  :data-categoryType="1"
+                  >{{ Category.categoryName }}</a
                 >
-                  <!-- 二级目录 -->
-                  <dt>
-                    <a
-                      :data-categoryName="child.categoryName"
-                      :data-categoryId="child.categoryId"
-                      :data-categoryType="2"
-                      >{{ child.categoryName }}</a
-                    >
-                  </dt>
-                  <dd>
-                    <em
-                      v-for="grandChild in child.categoryChild"
-                      :key="grandChild.categoryId"
-                    >
+              </h3>
+              <div class="item-list clearfix">
+                <div class="subitem">
+                  <dl
+                    class="fore"
+                    v-for="child in Category.categoryChild"
+                    :key="child.categoryId"
+                  >
+                    <!-- 二级目录 -->
+                    <dt>
                       <a
-                        :data-categoryName="grandChild.categoryName"
-                        :data-categoryId="grandChild.categoryId"
-                        :data-categoryType="3"
-                        >{{ grandChild.categoryName }}</a
+                        :data-categoryName="child.categoryName"
+                        :data-categoryId="child.categoryId"
+                        :data-categoryType="2"
+                        >{{ child.categoryName }}</a
                       >
-                    </em>
-                  </dd>
-                </dl>
+                    </dt>
+                    <dd>
+                      <em
+                        v-for="grandChild in child.categoryChild"
+                        :key="grandChild.categoryId"
+                      >
+                        <a
+                          :data-categoryName="grandChild.categoryName"
+                          :data-categoryId="grandChild.categoryId"
+                          :data-categoryType="3"
+                          >{{ grandChild.categoryName }}</a
+                        >
+                      </em>
+                    </dd>
+                  </dl>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -72,6 +78,12 @@
 import { mapState, mapActions } from "vuex";
 export default {
   name: "TypeNav",
+  data() {
+    return {
+      isHomeShow: this.$route.path === "/home",
+      isSearchShow: false,
+    };
+  },
   computed: {
     ...mapState({
       testCount: (state) => state.testCount,
@@ -80,17 +92,25 @@ export default {
   },
   methods: {
     ...mapActions(["getCategoryList"]),
-    search(e) {
+    goSearch(e) {
       // console.log(e.target.dataset);
       const { categoryname, categoryid, categorytype } = e.target.dataset;
       if (!categoryname) return;
-      this.$router.push({
+      this.isSearchShow = false;
+      const location = {
         name: "search",
         query: {
           categoryName: categoryname,
           [`category${categorytype}Id`]: categoryid,
         },
-      });
+      };
+      const { searchText } = this.$route.params;
+      if (searchText) {
+        location.params = {
+          searchText,
+        };
+      }
+      this.$router.push(location);
     },
   },
   mounted() {
@@ -140,7 +160,13 @@ export default {
       position: absolute;
       background: #fafafa;
       z-index: 999;
-
+      &.search-enter-active {
+        transition: height 1s;
+        overflow: hidden;
+      }
+      &.search-enter {
+        height: 0;
+      }
       .all-sort-list2 {
         .item {
           h3 {
