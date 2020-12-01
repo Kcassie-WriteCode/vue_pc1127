@@ -2,8 +2,8 @@
   {
     "id|+1": 1,
     "name": "@ctitle(4)",
-    "keywords|2": ["@ctitle(4,6)"],
-    "imgUrl": "@image('200x200','@color')",
+    "keywords|6": ["@ctitle(4,6)"],
+    "imgUrl": "@image('200x240','@color')",
     "navList|4-6": [
       {
         "url": "#",
@@ -13,10 +13,10 @@
     "carouselList|3": [
       {
         "id|+1": 1,
-        "imgUrl": "@image('320x360','@color')"
+        "imgUrl": "@image('330x360','@color')"
       }
     ],
     "recommendList|4": ["@image('200x200','@color')"],
-    "bigImg": "@image('200x350','@color')"
+    "bigImg": "@image('220x360','@color')"
   }
 ]
