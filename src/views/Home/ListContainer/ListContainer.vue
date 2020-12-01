@@ -3,15 +3,24 @@
     <div class="sortList clearfix">
       <div class="center">
         <!--banner轮播-->
+        <!-- <Carousel :carouselList="banners" autoplay/> -->
         <div class="swiper-container" id="mySwiper">
           <div
             class="swiper-wrapper"
             v-for="banner in banners"
             :key="banner.id"
           >
-            <div class="swiper-slide">
-              <img :src="banner.imgUrl" />
-            </div>
+            <!-- <div class="block">
+              <el-carousel trigger="click" height="425px" width="720px">
+                <el-carousel-item v-for="banner in banners" :key="banner.id"> -->
+                 
+                  <div class="swiper-slide">
+                    <img :src="banner.imgUrl" />
+                  </div>
+                <!-- </el-carousel-item>
+              </el-carousel>
+            </div> -->
+
             <!-- <div class="swiper-slide">
               <img src="./images/banner2.jpg" />
             </div>
