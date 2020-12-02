@@ -12,43 +12,83 @@
           </ul>
           <ul class="fl sui-tag">
             <li class="with-x" v-show="options.keyword" @click="delKeyword">
-              {{ options.keyword }}<i>×</i>
+              关键词：{{ options.keyword }}<i>×</i>
             </li>
             <li
               class="with-x"
               v-show="options.categoryName"
               @click="delCategory"
             >
-              {{ options.categoryName }}<i>×</i>
+              分类：{{ options.categoryName }}<i>×</i>
+            </li>
+            <li class="with-x" v-show="options.trademark" @click="delTrademark">
+              品牌：{{ options.trademark.split(":")[1] }}<i>×</i>
+            </li>
+            <li
+              class="with-x"
+              v-for="(prop, index) in options.props"
+              :key="prop"
+              @click="delProp(index)"
+            >
+              {{ prop.split(":")[2] }}:{{ prop.split(":")[1] }}<i>×</i>
             </li>
           </ul>
         </div>
 
         <!--selector 待选择的产品 trademarkList-->
-        <SearchSelector />
+        <SearchSelector :addTrademark="addTrademark" @add-props="addProps" />
 
         <!--details 商品列表导航-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li
+                  :class="{ active: options.order.indexOf('1') > -1 }"
+                  @click="setOrder('1')"
+                >
+                  <a
+                    >综合<i
+                      :class="{
+                        iconfont: true,
+                        'icon-direction-down': isAllDown,
+                        'icon-direction-up': !isAllDown,
+                      }"
+                    ></i
+                  ></a>
                 </li>
                 <li>
-                  <a href="#">销量</a>
+                  <a>销量</a>
                 </li>
                 <li>
-                  <a href="#">新品</a>
+                  <a>新品</a>
                 </li>
                 <li>
-                  <a href="#">评价</a>
+                  <a>评价</a>
                 </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li
+                  @click="setOrder('2')"
+                  :class="{ active: options.order.indexOf('2') > -1 }"
+                >
+                  <a
+                    >价格<span
+                      ><i
+                        :class="{
+                          iconfont: true,
+                          'icon-arrow-up-filling': true,
+                          deActive:
+                            options.order.indexOf('2') > -1 && isPriceDown,
+                        }"
+                      ></i
+                      ><i
+                        :class="{
+                          iconfont: true,
+                          'icon-arrow-down-filling': true,
+                          deActive:
+                            options.order.indexOf('2') > -1 && !isPriceDown,
+                        }"
+                      ></i></span
+                  ></a>
                 </li>
               </ul>
             </div>
@@ -96,35 +136,18 @@
             </ul>
           </div>
           <!-- totalPages总页数 -->
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <el-pagination
+            background
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="options.pageNo"
+            :page-sizes="[10, 15, 20]"
+            :page-size="10"
+            :pager-count="9"
+            layout=" prev, pager, next,total, sizes, jumper"
+            :total="total"
+          >
+          </el-pagination>
         </div>
       </div>
     </div>
@@ -145,12 +168,14 @@ export default {
         category3Id: "",
         categoryName: "",
         keyword: "",
-        order: "",
+        order: "1:dsec",
         pageNo: 1,
         pageSize: 5,
         props: [],
         trademark: "",
       },
+      isAllDown: true,
+      isPriceDown: false,
     };
   },
   components: {
@@ -158,7 +183,7 @@ export default {
     TypeNav,
   },
   computed: {
-    ...mapGetters(["goodsList"]),
+    ...mapGetters(["goodsList", "total"]),
   },
   watch: {
     //监视地址的变化。发送请求获取数据
@@ -169,7 +194,7 @@ export default {
   methods: {
     ...mapActions(["getProductList"]),
     //更新商品列表
-    updateProductList() {
+    updateProductList(pageNo = 1) {
       const { searchText: keyword } = this.$route.params;
       const {
         category1Id,
@@ -184,6 +209,7 @@ export default {
         category2Id,
         category3Id,
         categoryName,
+        pageNo,
       };
       //更新数据
       this.options = options;
@@ -207,6 +233,51 @@ export default {
         name: "search",
         params: this.$route.params,
       });
+    },
+    addTrademark(trademark) {
+      this.options.trademark = trademark;
+      this.updateProductList();
+    },
+    delTrademark() {
+      this.options.trademark = "";
+      this.updateProductList();
+    },
+    addProps(prop) {
+      this.options.props.push(prop);
+      this.updateProductList();
+    },
+    delProp(index) {
+      this.options.props.splice(index, 1);
+      this.updateProductList();
+    },
+    setOrder(order) {
+      let [orderNum, orderType] = this.options.order.split(":");
+      //如果两个相等，证明是点了两次
+      if (orderNum === order) {
+        if (order === "1") {
+          this.isAllDown = !this.isAllDown;
+        } else {
+          this.isPriceDown = !this.isPriceDown;
+        }
+        orderType = orderType === "desc" ? "asc" : "desc";
+      } else {
+        //初始化orderType状态
+        if (order === "1") {
+          orderType = this.isAllDown ? "desc" : "asc";
+        } else {
+          orderType = "asc";
+          this.isPriceDown = false;
+        }
+      }
+      this.options.order = `${order}:${orderType}`;
+      this.updateProductList();
+    },
+    handleSizeChange(pageSize) {
+      this.options.pageSize = pageSize;
+      this.updateProductList();
+    },
+    handleCurrentChange(pageNo) {
+      this.updateProductList(pageNo);
     },
   },
   mounted() {
@@ -318,11 +389,30 @@ export default {
               line-height: 18px;
 
               a {
-                display: block;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
                 cursor: pointer;
                 padding: 11px 15px;
                 color: #777;
                 text-decoration: none;
+                i {
+                  padding-left: 5px;
+                  font-size: 14px;
+                }
+                span {
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-around;
+                  align-items: center;
+                  i {
+                    height: 8px;
+                    line-height: 8px;
+                  }
+                  .deActive {
+                    color: rgba(255, 255, 255, 0.5);
+                  }
+                }
               }
 
               &.active {

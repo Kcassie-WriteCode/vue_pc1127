@@ -111,7 +111,7 @@ export default {
               }
             }
 
-            &:nth-child(6) {
+            &:nth-child(7) {
               a {
                 &::after {
                   content: "";
