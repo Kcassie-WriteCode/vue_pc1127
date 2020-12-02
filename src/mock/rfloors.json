@@ -4,7 +4,7 @@
     "name": "@ctitle(4)",
     "keywords|6": ["@ctitle(4,6)"],
     "imgUrl": "@image('200x240','@color')",
-    "navList|4-6": [
+    "navList|6": [
       {
         "url": "#",
         "text": "@ctitle(2,4)"

@@ -19,7 +19,7 @@
       <div class="fl value">
         <ul class="type-list">
           <li v-for="(attrValue, index) in attrs.attrValueList" :key="index">
-            <a>{{ attrValue[index] }}</a>
+            <a>{{ attrValue }}</a>
           </li>
         </ul>
       </div>

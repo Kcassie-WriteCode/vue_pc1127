@@ -9,7 +9,7 @@
             v-for="(nav, index) in floor.navList"
             :key="index"
           >
-            <li class="active">
+            <li class=" ">
               <a href="#tab1" data-toggle="tab">{{ nav.text }}</a>
             </li>
           </ul>
@@ -98,10 +98,13 @@ export default {
           li {
             float: left;
             line-height: 18px;
+
             a {
               padding-top: 1px;
               font-weight: 400;
+              color: #e1251b;
               background-color: #fff;
+
               &::after {
                 content: "|";
                 padding: 0 10px;
@@ -163,7 +166,6 @@ export default {
           .floorBanner {
             width: 330px;
             height: 100%;
-            overflow: hidden;
           }
 
           .split {

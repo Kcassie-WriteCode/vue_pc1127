@@ -11,10 +11,16 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <li class="with-x" v-show="options.keyword" @click="delKeyword">
+              {{ options.keyword }}<i>×</i>
+            </li>
+            <li
+              class="with-x"
+              v-show="options.categoryName"
+              @click="delCategory"
+            >
+              {{ options.categoryName }}<i>×</i>
+            </li>
           </ul>
         </div>
 
@@ -131,6 +137,22 @@ import { mapGetters, mapActions } from "vuex";
 import TypeNav from "@comps/TypeNav";
 export default {
   name: "Search",
+  data() {
+    return {
+      options: {
+        category1Id: "",
+        category2Id: "",
+        category3Id: "",
+        categoryName: "",
+        keyword: "",
+        order: "",
+        pageNo: 1,
+        pageSize: 5,
+        props: [],
+        trademark: "",
+      },
+    };
+  },
   components: {
     SearchSelector,
     TypeNav,
@@ -138,11 +160,58 @@ export default {
   computed: {
     ...mapGetters(["goodsList"]),
   },
+  watch: {
+    //监视地址的变化。发送请求获取数据
+    $route() {
+      this.updateProductList();
+    },
+  },
   methods: {
     ...mapActions(["getProductList"]),
+    //更新商品列表
+    updateProductList() {
+      const { searchText: keyword } = this.$route.params;
+      const {
+        category1Id,
+        category2Id,
+        category3Id,
+        categoryName,
+      } = this.$route.query;
+      const options = {
+        ...this.options, //初始化所有的数据
+        keyword, //以下的会覆盖上面的
+        category1Id,
+        category2Id,
+        category3Id,
+        categoryName,
+      };
+      //更新数据
+      this.options = options;
+      //传入options发送请求
+      this.getProductList(options);
+    },
+    delKeyword() {
+      this.options.keyword = "";
+      this.$bus.$emit("clearKeyword");
+      this.$router.replace({
+        name: "search",
+        query: this.$route.query,
+      });
+    },
+    delCategory() {
+      this.options.categoryName = "";
+      this.options.category1Id = "";
+      this.options.category2Id = "";
+      this.options.category3Id = "";
+      this.$router.replace({
+        name: "search",
+        params: this.$route.params,
+      });
+    },
   },
   mounted() {
-    this.getProductList();
+    // 一上来发送请求会携带参数
+    this.updateProductList();
   },
 };
 </script>

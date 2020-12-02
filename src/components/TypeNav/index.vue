@@ -106,7 +106,11 @@ export default {
           searchText,
         };
       }
-      this.$router.push(location);
+      if (this.$route.path.indexOf("/search") > -1) {
+        this.$router.replace(location);
+      } else {
+        this.$router.push(location);
+      }
     },
   },
   mounted() {
