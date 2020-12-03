@@ -82,11 +82,8 @@ export default {
 </script>
 
 <style lang='less' scoped>
-.header {
-  width: 100%;
-  min-width: 1200px;
-}
 .header-top {
+  width: 100%;
   background: #ccc;
 }
 .header-top-container {

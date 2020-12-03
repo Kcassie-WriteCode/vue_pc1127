@@ -38,7 +38,11 @@ textarea {
     sans-serif; /* 用 ascii 字符表示，使得在任何编码下都无问题 */
   color: #333;
 }
-
+html,
+body {
+  width: 100%;
+  min-width: 1200px;
+}
 h1 {
   font-size: 18px; /* 18px / 12px = 1.5 */
 }
