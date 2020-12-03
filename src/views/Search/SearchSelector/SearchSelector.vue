@@ -3,11 +3,12 @@
     <div class="type-wrap logo">
       <div class="fl key brand">品牌</div>
       <div class="value logos">
+        <!-- trademarkList 品牌 -->
         <ul class="logo-list">
           <li
             v-for="trademark in trademarkList"
             :key="trademark.tmId"
-            @click="addTrademark(`${trademark.tmId}:${trademark.tmName} `)"
+            @click="addTrademark(`${trademark.tmId}:${trademark.tmName}`)"
           >
             {{ trademark.tmName }}
           </li>
@@ -18,6 +19,7 @@
         <a href="javascript:void(0);">更多</a>
       </div>
     </div>
+    <!-- attrsList 品牌属性列表-->
     <div class="type-wrap" v-for="attrs in attrsList" :key="attrs.attrId">
       <div class="fl key">{{ attrs.attrName }}</div>
       <div class="fl value">
@@ -25,8 +27,13 @@
           <li
             v-for="(attrValue, index) in attrs.attrValueList"
             :key="index"
-            @click="$emit('add-props',`${attrs.attrId}:${attrValue}:${attrs.attrName}`)"
+            @click="
+              $listeners['add-prop'](
+                `${attrs.attrId}:${attrValue}:${attrs.attrName}`
+              )
+            "
           >
+            <!-- @click="$emit('add-prop',`${attrs.attrId}:${attrValue}:${attrs.attrName}`)" -->
             <a>{{ attrValue }}</a>
           </li>
         </ul>
@@ -37,15 +44,15 @@
 </template>
 
 <script>
-import { mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 export default {
   name: "SearchSelector",
   props: {
     addTrademark: Function,
   },
   computed: {
-    ...mapGetters(["attrsList", "trademarkList"]),
-  }
+    ...mapGetters(["trademarkList", "attrsList"]),
+  },
 };
 </script>
 

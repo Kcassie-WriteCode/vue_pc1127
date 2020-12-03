@@ -71,13 +71,13 @@ export default {
       this.searchText = "";
     });
   },
-  watch:{
-    $route(){
+  watch: {
+    $route() {
       if (this.$route.path.indexOf("/search") === -1) {
-      this.searchText = "";
-    }
-    }
-  }
+        this.searchText = "";
+      }
+    },
+  },
 };
 </script>
 

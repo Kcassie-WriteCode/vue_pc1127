@@ -3,7 +3,7 @@
     <TypeNav />
     <div class="main">
       <div class="py-container">
-        <!--bread 已经选择的产品-->
+        <!--bread 添加删除品牌数据-->
         <div class="bread">
           <ul class="fl sui-breadcrumb">
             <li>
@@ -35,13 +35,14 @@
           </ul>
         </div>
 
-        <!--selector 待选择的产品 trademarkList-->
-        <SearchSelector :addTrademark="addTrademark" @add-props="addProps" />
+        <!--selector 属性选择器-->
+        <SearchSelector :addTrademark="addTrademark" @add-prop="addProp" />
 
-        <!--details 商品列表导航-->
+        <!--details -->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
+              <!-- 排序搜索 -->
               <ul class="sui-nav">
                 <li
                   :class="{ active: options.order.indexOf('1') > -1 }"
@@ -67,8 +68,8 @@
                   <a>评价</a>
                 </li>
                 <li
-                  @click="setOrder('2')"
                   :class="{ active: options.order.indexOf('2') > -1 }"
+                  @click="setOrder('2')"
                 >
                   <a
                     >价格<span
@@ -76,7 +77,7 @@
                         :class="{
                           iconfont: true,
                           'icon-arrow-up-filling': true,
-                          deActive:
+                          deactive:
                             options.order.indexOf('2') > -1 && isPriceDown,
                         }"
                       ></i
@@ -84,7 +85,7 @@
                         :class="{
                           iconfont: true,
                           'icon-arrow-down-filling': true,
-                          deActive:
+                          deactive:
                             options.order.indexOf('2') > -1 && !isPriceDown,
                         }"
                       ></i></span
@@ -93,7 +94,7 @@
               </ul>
             </div>
           </div>
-          <!-- 产品列表 goodsList -->
+          <!-- 商品展示 -->
           <div class="goods-list">
             <ul class="yui3-g">
               <li class="yui3-u-1-5" v-for="goods in goodsList" :key="goods.id">
@@ -135,7 +136,7 @@
               </li>
             </ul>
           </div>
-          <!-- totalPages总页数 -->
+          <!-- 分页器 -->
           <el-pagination
             background
             @size-change="handleSizeChange"
@@ -143,7 +144,6 @@
             :current-page="options.pageNo"
             :page-sizes="[10, 15, 20]"
             :page-size="10"
-            :pager-count="9"
             layout=" prev, pager, next,total, sizes, jumper"
             :total="total"
           >
@@ -155,22 +155,22 @@
 </template>
 
 <script>
-import SearchSelector from "./SearchSelector/SearchSelector";
-import { mapGetters, mapActions } from "vuex";
 import TypeNav from "@comps/TypeNav";
+import { mapGetters, mapActions } from "vuex";
+import SearchSelector from "./SearchSelector/SearchSelector";
 export default {
   name: "Search",
   data() {
     return {
       options: {
-        category1Id: "",
-        category2Id: "",
-        category3Id: "",
+        category1Id: 1,
+        category2Id: 2,
+        category3Id: 3,
         categoryName: "",
         keyword: "",
-        order: "1:dsec",
+        order: "1:desc",
         pageNo: 1,
-        pageSize: 5,
+        pageSize: 10,
         props: [],
         trademark: "",
       },
@@ -185,46 +185,42 @@ export default {
   computed: {
     ...mapGetters(["goodsList", "total"]),
   },
-  watch: {
-    //监视地址的变化。发送请求获取数据
-    $route() {
-      this.updateProductList();
-    },
-  },
   methods: {
     ...mapActions(["getProductList"]),
-    //更新商品列表
     updateProductList(pageNo = 1) {
       const { searchText: keyword } = this.$route.params;
       const {
+        categoryName,
         category1Id,
         category2Id,
         category3Id,
-        categoryName,
       } = this.$route.query;
-      const options = {
-        ...this.options, //初始化所有的数据
-        keyword, //以下的会覆盖上面的
+      //根据地址来初始化搜索条件
+      this.options = {
+        ...this.options,
+        keyword, //后面的会覆盖前面的
+        categoryName,
         category1Id,
         category2Id,
         category3Id,
-        categoryName,
         pageNo,
       };
-      //更新数据
-      this.options = options;
-      //传入options发送请求
-      this.getProductList(options);
+      this.getProductList(this.options);
     },
     delKeyword() {
+      //删除搜索标签,得重新设置地址值，重新导航
       this.options.keyword = "";
+      //全局事件总线，触发删除输入框内容
       this.$bus.$emit("clearKeyword");
+      //如果是在search页面的，用replace不保存当前浏览历史记录
+      //点击回退的时候可以直接到home首页
       this.$router.replace({
         name: "search",
         query: this.$route.query,
       });
     },
     delCategory() {
+      //删除搜索标签,重新导航
       this.options.categoryName = "";
       this.options.category1Id = "";
       this.options.category2Id = "";
@@ -234,6 +230,7 @@ export default {
         params: this.$route.params,
       });
     },
+    //添加/删除品牌数据
     addTrademark(trademark) {
       this.options.trademark = trademark;
       this.updateProductList();
@@ -242,7 +239,7 @@ export default {
       this.options.trademark = "";
       this.updateProductList();
     },
-    addProps(prop) {
+    addProp(prop) {
       this.options.props.push(prop);
       this.updateProductList();
     },
@@ -252,23 +249,28 @@ export default {
     },
     setOrder(order) {
       let [orderNum, orderType] = this.options.order.split(":");
-      //如果两个相等，证明是点了两次
+      //证明第二次点击，改变状态
       if (orderNum === order) {
+        //改变字体图标
         if (order === "1") {
           this.isAllDown = !this.isAllDown;
         } else {
           this.isPriceDown = !this.isPriceDown;
         }
+        //改变排序，取反
         orderType = orderType === "desc" ? "asc" : "desc";
       } else {
-        //初始化orderType状态
+        //第一次点击，对状态进行初始化
         if (order === "1") {
+          //不用改变，跟上次一样,写明升降序类型
           orderType = this.isAllDown ? "desc" : "asc";
         } else {
-          orderType = "asc";
+          //初始化为升序
           this.isPriceDown = false;
+          orderType = "asc";
         }
       }
+      //对data中得order赋值
       this.options.order = `${order}:${orderType}`;
       this.updateProductList();
     },
@@ -277,11 +279,20 @@ export default {
       this.updateProductList();
     },
     handleCurrentChange(pageNo) {
+      this.options.pageNo = pageNo;
+      //因为前面设置默认pageNo为1
+      //所以发送请求的时候要把pageNo传进去，改变默认页数
       this.updateProductList(pageNo);
     },
   },
+  watch: {
+    //监视地址值的变化来发送请求,重新搜索
+    $route() {
+      this.updateProductList();
+    },
+  },
   mounted() {
-    // 一上来发送请求会携带参数
+    //一上来就有数据发送请求
     this.updateProductList();
   },
 };
@@ -404,12 +415,11 @@ export default {
                   display: flex;
                   flex-direction: column;
                   justify-content: space-around;
-                  align-items: center;
                   i {
                     height: 8px;
                     line-height: 8px;
                   }
-                  .deActive {
+                  .deactive {
                     color: rgba(255, 255, 255, 0.5);
                   }
                 }

@@ -5,10 +5,10 @@ export default {
       trademarkList: [],
       attrsList: [],
       goodsList: [],
+      total: 0,
     },
   },
   getters: {
-    //为了方便使用数据
     trademarkList(state) {
       return state.productList.trademarkList;
     },
@@ -24,6 +24,7 @@ export default {
   },
   actions: {
     async getProductList({ commit }, data = {}) {
+      //reqProductList返回的是一个promise对象，取成功时的数据
       const productList = await reqProductList(data);
       commit("GET_PRODUCT_LIST", productList);
     },
