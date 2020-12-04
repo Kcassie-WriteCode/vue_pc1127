@@ -44,10 +44,7 @@
             <div class="navbar-inner filter">
               <!-- 排序搜索 -->
               <ul class="sui-nav">
-                <li
-                  :class="{ active: isOrder('1') }"
-                  @click="setOrder('1')"
-                >
+                <li :class="{ active: isOrder('1') }" @click="setOrder('1')">
                   <a
                     >综合<i
                       :class="{
@@ -67,26 +64,21 @@
                 <li>
                   <a>评价</a>
                 </li>
-                <li
-                  :class="{ active: isOrder('2')}"
-                  @click="setOrder('2')"
-                >
+                <li :class="{ active: isOrder('2') }" @click="setOrder('2')">
                   <a
                     >价格<span
                       ><i
                         :class="{
                           iconfont: true,
                           'icon-arrow-up-filling': true,
-                          deactive:
-                            isOrder('2') && isPriceDown,
+                          deactive: isOrder('2') && isPriceDown,
                         }"
                       ></i
                       ><i
                         :class="{
                           iconfont: true,
                           'icon-arrow-down-filling': true,
-                          deactive:
-                            isOrder('2') && !isPriceDown,
+                          deactive: isOrder('2') && !isPriceDown,
                         }"
                       ></i></span
                   ></a>
@@ -137,7 +129,14 @@
             </ul>
           </div>
           <!-- 分页器 -->
-          <el-pagination
+          <Pagination
+            @current-change="handleCurrentChange"
+            :current-page="options.pageNo"
+            :pager-count="7"
+            :page-size="5"
+            :total="total"
+          />
+          <!-- <el-pagination
             background
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
@@ -147,7 +146,7 @@
             layout=" prev, pager, next,total, sizes, jumper"
             :total="total"
           >
-          </el-pagination>
+          </el-pagination> -->
         </div>
       </div>
     </div>
@@ -156,6 +155,7 @@
 
 <script>
 import TypeNav from "@comps/TypeNav";
+import Pagination from "@comps/Pagination";
 import { mapGetters, mapActions } from "vuex";
 import SearchSelector from "./SearchSelector/SearchSelector";
 export default {
@@ -181,6 +181,7 @@ export default {
   components: {
     SearchSelector,
     TypeNav,
+    Pagination,
   },
   computed: {
     ...mapGetters(["goodsList", "total"]),
@@ -276,10 +277,10 @@ export default {
       this.options.order = `${order}:${orderType}`;
       this.updateProductList();
     },
-    handleSizeChange(pageSize) {
-      this.options.pageSize = pageSize;
-      this.updateProductList();
-    },
+    // handleSizeChange(pageSize) {
+    //   this.options.pageSize = pageSize;
+    //   this.updateProductList();
+    // },
     handleCurrentChange(pageNo) {
       this.options.pageNo = pageNo;
       //因为前面设置默认pageNo为1
