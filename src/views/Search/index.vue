@@ -45,7 +45,7 @@
               <!-- 排序搜索 -->
               <ul class="sui-nav">
                 <li
-                  :class="{ active: options.order.indexOf('1') > -1 }"
+                  :class="{ active: isOrder('1') }"
                   @click="setOrder('1')"
                 >
                   <a
@@ -68,7 +68,7 @@
                   <a>评价</a>
                 </li>
                 <li
-                  :class="{ active: options.order.indexOf('2') > -1 }"
+                  :class="{ active: isOrder('2')}"
                   @click="setOrder('2')"
                 >
                   <a
@@ -78,7 +78,7 @@
                           iconfont: true,
                           'icon-arrow-up-filling': true,
                           deactive:
-                            options.order.indexOf('2') > -1 && isPriceDown,
+                            isOrder('2') && isPriceDown,
                         }"
                       ></i
                       ><i
@@ -86,7 +86,7 @@
                           iconfont: true,
                           'icon-arrow-down-filling': true,
                           deactive:
-                            options.order.indexOf('2') > -1 && !isPriceDown,
+                            isOrder('2') && !isPriceDown,
                         }"
                       ></i></span
                   ></a>
@@ -232,6 +232,7 @@ export default {
     },
     //添加/删除品牌数据
     addTrademark(trademark) {
+      if (this.options.trademark) return;
       this.options.trademark = trademark;
       this.updateProductList();
     },
@@ -240,6 +241,7 @@ export default {
       this.updateProductList();
     },
     addProp(prop) {
+      if (this.options.props.indexOf(prop) > -1) return;
       this.options.props.push(prop);
       this.updateProductList();
     },
@@ -283,6 +285,9 @@ export default {
       //因为前面设置默认pageNo为1
       //所以发送请求的时候要把pageNo传进去，改变默认页数
       this.updateProductList(pageNo);
+    },
+    isOrder(order) {
+      return this.options.order.indexOf(order) > -1;
     },
   },
   watch: {
