@@ -71,6 +71,7 @@ export default {
   watch: {
     // 让每次页码发生变化加载新数据
     myCurrentPage(newVal) {
+      //事件转换不能简写，props可以简写//错误
       //this.$listeners.currentChange(newVal);
       this.$emit("current-change", newVal);
     },

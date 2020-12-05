@@ -2,7 +2,7 @@ import { reqProductDetail } from "@api/detail";
 export default {
   state: {
     productInfo: {
-      productInfo: {},
+      categoryView: {},
       skuInfo: {},
       spuSaleAttrList: [],
     },

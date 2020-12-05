@@ -7,18 +7,30 @@
     <section class="con">
       <!-- 导航路径区域 -->
       <div class="conPoin">
-        <!-- <span>{{ categoryView.category1Name}}</span>
+        <span>{{ categoryView.category1Name }}</span>
         <span>{{ categoryView.category2Name }}</span>
-        <span>{{ categoryView.category3Name }}</span> -->
+        <span>{{ categoryView.category3Name }}</span>
       </div>
       <!-- 主要内容区域 -->
       <div class="mainCon">
         <!-- 左侧放大镜区域 -->
         <div class="previewWrap">
           <!--放大镜效果-->
-          <Zoom />
+          <Zoom
+            :imgUrl="
+              skuInfo.skuImageList &&
+              skuInfo.skuImageList[currentImgIndex].imgUrl
+            "
+            :bigImgUrl="
+              skuInfo.skuImageList &&
+              skuInfo.skuImageList[currentImgIndex].imgUrl
+            "
+          />
           <!-- 小图列表 -->
-          <ImageList />
+          <ImageList
+            :skuImageList="skuInfo.skuImageList"
+            :handleCurrentImgIndex="handleCurrentImgIndex"
+          />
         </div>
         <!-- 右侧选择区域布局 -->
         <div class="InfoWrap">
@@ -346,11 +358,19 @@ export default {
     Zoom,
     TypeNav,
   },
+  data() {
+    return {
+      currentImgIndex: 0,
+    };
+  },
   computed: {
     ...mapGetters(["categoryView", "skuInfo", "spuSaleAttrList"]),
   },
   methods: {
     ...mapActions(["getProductDetail"]),
+    handleCurrentImgIndex(index) {
+      this.currentImgIndex = index;
+    },
   },
   mounted() {
     this.getProductDetail(this.$route.params.id);
