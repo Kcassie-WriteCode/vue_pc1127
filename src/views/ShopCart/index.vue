@@ -13,7 +13,12 @@
       <div class="cart-body">
         <ul class="cart-list" v-for="cart in cartList" :key="cart.id">
           <li class="cart-list-con1">
-            <input type="checkbox" name="chk_list" />
+            <input
+              type="checkbox"
+              name="chk_list"
+              :checked="cart.isChecked"
+              @change="updateCheck(cart.skuId)"
+            />
           </li>
           <li class="cart-list-con2">
             <img :src="cart.imgUrl" />
@@ -63,6 +68,7 @@
     <div class="cart-tool">
       <div class="select-all">
         <input class="chooseAll" type="checkbox" />
+        <!-- v-model="isAllChecked" -->
         <span>全选</span>
       </div>
       <div class="option">
@@ -105,9 +111,17 @@ export default {
         .filter((cart) => cart.isChecked === 1)
         .reduce((p, c) => p + c.skuNum * c.skuPrice, 0);
     },
+    /* isAllChecked: {
+      get() {
+        return this.isAllChecked;
+      },
+      set(newVal) {
+        this.cartList = this.cartList.map((cart) => cart.isChecked == newVal);
+      },
+    }, */
   },
   methods: {
-    ...mapActions(["getCartList", "updateCartCount"]),
+    ...mapActions(["getCartList", "updateCartCount", "updateCheckCart"]),
     async updateCount(skuId, skuNum) {
       await this.updateCartCount({ skuId, skuNum });
     },
@@ -123,6 +137,11 @@ export default {
     update(skuId, skuNum, e) {
       if (e.target.value === skuNum) return;
       this.updateCartCount({ skuId, skuNum: e.target.value - skuNum });
+    },
+    updateCheck(skuId) {
+      const cart = this.cartList.find((cart) => cart.skuId === skuId);
+      cart.isChecked = cart.isChecked === 1 ? 0 : 1;
+      this.updateCheckCart({ skuId, isChecked: cart.isChecked });
     },
   },
   mounted() {
