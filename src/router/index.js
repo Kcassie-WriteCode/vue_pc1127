@@ -5,8 +5,12 @@ import Login from "../views/Login";
 import Register from "../views/Register";
 import Search from "../views/Search";
 import Detail from "@views/Detail";
-import AddCartSuccess from '@views/AddCartSuccess'
-import ShopCart from '@views/ShopCart'
+import AddCartSuccess from "@views/AddCartSuccess";
+import ShopCart from "@views/ShopCart";
+import Center from "@views/Center";
+import PaySuccess from "@views/PaySuccess";
+import Pay from "@views/Pay";
+import Trade from "@views/Trade";
 const push = VueRouter.prototype.push;
 const replace = VueRouter.prototype.replace;
 VueRouter.prototype.push = function(location, onComplete, onAbort) {
@@ -65,6 +69,26 @@ export default new VueRouter({
       name: "shopcart",
       path: "/shopcart",
       component: ShopCart,
+    },
+    {
+      name: "trade",
+      path: "/trade",
+      component: Trade,
+    },
+    {
+      name: "pay",
+      path: "/pay",
+      component: Pay,
+    },
+    {
+      name: "paySuccessart",
+      path: "/paySuccess",
+      component: PaySuccess,
+    },
+    {
+      name: "center",
+      path: "/center",
+      component: Center,
     },
   ],
   scrollBehavior() {
