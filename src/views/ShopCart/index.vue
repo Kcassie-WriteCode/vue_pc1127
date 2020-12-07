@@ -25,18 +25,32 @@
             <span class="price">{{ cart.cartPrice }}</span>
           </li>
           <li class="cart-list-con5">
-            <a href="javascript:void(0)" class="mins">-</a>
+            <button
+              class="mins"
+              @click="updateCount(cart.skuId, -1, cart.skuNum)"
+              :disabled="cart.skuNum === 1"
+            >
+              -
+            </button>
             <input
               autocomplete="off"
               type="text"
-              value="1"
+              :value="cart.skuNum"
               minnum="1"
               class="itxt"
+              @input="formatSkuNum"
+              @blur="update(cart.skuId, cart.skuNum, $event)"
             />
-            <a href="javascript:void(0)" class="plus">+</a>
+            <button
+              class="plus"
+              @click="updateCount(cart.skuId, 1, cart.skuNum)"
+              :disabled="cart.skuNum === 10"
+            >
+              +
+            </button>
           </li>
           <li class="cart-list-con6">
-            <span class="sum">{{ cart.skuNum }}</span>
+            <span class="sum">{{ cart.skuNum * cart.cartPrice }}</span>
           </li>
           <li class="cart-list-con7">
             <a href="#none" class="sindelet">删除</a>
@@ -57,10 +71,13 @@
         <a href="#none">清除下柜商品</a>
       </div>
       <div class="money-box">
-        <div class="chosed">已选择 <span>0</span>件商品</div>
+        <div class="chosed">
+          已选择 <span>{{ total }}</span
+          >件商品
+        </div>
         <div class="sumprice">
           <em>总价（不含运费） ：</em>
-          <i class="summoney">0</i>
+          <i class="summoney">{{ totalPrice }}</i>
         </div>
         <div class="sumbtn">
           <a class="sum-btn" href="###" target="_blank">结算</a>
@@ -78,9 +95,35 @@ export default {
     ...mapState({
       cartList: (state) => state.shopcart.cartList,
     }),
+    total() {
+      return this.cartList
+        .filter((cart) => cart.isChecked === 1)
+        .reduce((p, c) => p + c.skuNum, 0);
+    },
+    totalPrice() {
+      return this.cartList
+        .filter((cart) => cart.isChecked === 1)
+        .reduce((p, c) => p + c.skuNum * c.skuPrice, 0);
+    },
   },
   methods: {
-    ...mapActions(["getCartList"]),
+    ...mapActions(["getCartList", "updateCartCount"]),
+    async updateCount(skuId, skuNum) {
+      await this.updateCartCount({ skuId, skuNum });
+    },
+    formatSkuNum(e) {
+      let skuNum = +e.target.value.replace(/\D+/g, "");
+      if (skuNum < 1) {
+        skuNum = 1;
+      } else if (skuNum > 10) {
+        skuNum = 10;
+      }
+      e.target.value = skuNum;
+    },
+    update(skuId, skuNum, e) {
+      if (e.target.value === skuNum) return;
+      this.updateCartCount({ skuId, skuNum: e.target.value - skuNum });
+    },
   },
   mounted() {
     this.getCartList();

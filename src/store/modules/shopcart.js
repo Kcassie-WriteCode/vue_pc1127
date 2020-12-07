@@ -1,7 +1,7 @@
 import {
   reqCartList,
   reqAddToCart,
-  //reqCheckCart,
+  reqCheckCart,
   // reqDeleteCart,
 } from "@api/shopcart";
 export default {
@@ -17,6 +17,10 @@ export default {
     async updateCartCount({ commit }, { skuId, skuNum }) {
       await reqAddToCart(skuId, skuNum);
       commit("UPDATE_CART_COUNT", { skuId, skuNum });
+    },
+    async updateCheckCart({ commit }, { skuId, isChecked }) {
+      await reqCheckCart(skuId, isChecked);
+      console.log(commit);
     },
   },
   mutations: {
