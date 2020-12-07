@@ -9,27 +9,35 @@
               <a class="login-current">账户登陆</a>
             </div>
             <div class="login-content">
-              <form action="##">
-                <div class="input-text clearFix">
-                  <span></span>
-                  <input type="text" placeholder="手机号" v-model="phone" />
-                </div>
+              <form @submit.prevent="submit">
+                <ValidationProvider rules="required" v-slot="{ errors }">
+                  <div class="input-text clearFix">
+                    <span></span>
+                    <input
+                      type="text"
+                      placeholder="手机号"
+                      v-model="user.phone"
+                    />
+                    <p :style="{ color: 'red' }">{{ errors[0] }}</p>
+                  </div>
+                </ValidationProvider>
                 <div class="input-text clearFix">
                   <span class="pwd"></span>
                   <input
                     type="text"
                     placeholder="请输入密码"
-                    v-model="password"
+                    v-model="user.password"
                   />
                 </div>
+
                 <div class="setting clearFix">
                   <label class="checkbox inline">
-                    <input name="m1" type="checkbox" value="2" checked="" />
+                    <input name="m1" type="checkbox" v-model="isAutoLogin" />
                     自动登录
                   </label>
                   <span class="forget">忘记密码？</span>
                 </div>
-                <button class="btn">登&nbsp;&nbsp;录</button>
+                <button class="btn" type="submit">登&nbsp;&nbsp;录</button>
               </form>
 
               <div class="call clearFix">
@@ -61,27 +69,59 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
+import { ValidationProvider, extend } from "vee-validate";
+import { required } from "vee-validate/dist/rules";
+extend("required", {
+  ...required,
+  message: "手机号是必填的！",
+});
 export default {
   name: "Login",
   data() {
     return {
-      phone: "",
-      password: "",
+      user: {
+        phone: "",
+        password: "",
+      },
+      isLogin: false, // 正在登录
+      isAutoLogin: true,
     };
   },
+  components: {
+    ValidationProvider,
+  },
+  computed: {
+    ...mapState({
+      token: (state) => state.user.token,
+      nickName: (state) => state.user.nickName,
+    }),
+  },
+  //如果已经登录过了就可以直接刷新到'/'
+  created() {
+    if (this.token) {
+      this.$router.replace("/");
+    }
+  },
   methods: {
-    ...mapActions(["getUserInfo"]),
-    /* login() {
-      reqLogin("13700000000", "111111")
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }, */
-  }
+    ...mapActions(["login"]),
+    async submit() {
+      try {
+        if (this.isLogin) return;
+        this.isLogin = true;
+        const { phone, password } = this.user;
+        await this.login({ phone, password });
+        //登录成功，判断如果自动登录的话就保存信息
+        if (this.isAutoLogin) {
+          localStorage.setItem("token", this.token);
+          localStorage.setItem("nickName", this.nickName);
+        }
+        this.$router.replace("/");
+      } catch {
+        this.isLogin = false;
+      }
+    },
+  },
 };
 </script>
 

@@ -1,12 +1,12 @@
 import home from "./home";
 import search from "./search";
-import login from "./login";
+import user from "./user";
 import detail from "./detail";
 import shopcart from "./shopcart";
 export default {
   home,
   search,
-  login,
+  user,
   detail,
   shopcart,
 };

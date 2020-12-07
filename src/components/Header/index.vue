@@ -4,7 +4,11 @@
       <div class="header-top-container">
         <div class="header-top-container-left">
           <p>尚品汇欢迎您!</p>
-          <div>
+          <div v-if="$store.state.user.nickName">
+            <span>{{ $store.state.user.nickName }}</span>&nbsp;
+            <button>退出</button>
+          </div>
+          <div v-else>
             <span>请</span>
             <router-link to="/login">登录</router-link>
             <router-link to="/register">免费注册</router-link>
