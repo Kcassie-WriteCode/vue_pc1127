@@ -35,5 +35,9 @@ export default {
         return cart;
       });
     },
+    UPDATE_CHECKED(state, newVal) {
+      newVal = newVal === true ? 1 : 0;
+      state.cartList = state.cartList.map((cart) => (cart.isChecked = newVal));
+    },
   },
 };

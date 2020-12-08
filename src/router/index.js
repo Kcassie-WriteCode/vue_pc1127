@@ -11,6 +11,7 @@ import Center from "@views/Center";
 import PaySuccess from "@views/PaySuccess";
 import Pay from "@views/Pay";
 import Trade from "@views/Trade";
+import store from "../store";
 const push = VueRouter.prototype.push;
 const replace = VueRouter.prototype.replace;
 VueRouter.prototype.push = function(location, onComplete, onAbort) {
@@ -26,7 +27,7 @@ VueRouter.prototype.replace = function(location, onComplete, onAbort) {
   return replace.call(this, location, onComplete, () => {});
 };
 Vue.use(VueRouter);
-export default new VueRouter({
+const router = new VueRouter({
   routes: [
     {
       path: "/",
@@ -95,3 +96,11 @@ export default new VueRouter({
     return { x: 0, y: 0 };
   },
 });
+const permissionPaths = ["/trade", "pay", "center"];
+router.beforeEach((to, from, next) => {
+  if (permissionPaths.indexOf(to.path) > -1 && store.state.user.token) {
+    return next("/login");
+  }
+  next();
+});
+export default router;

@@ -67,8 +67,7 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" />
-        <!-- v-model="isAllChecked" -->
+        <input class="chooseAll" type="checkbox" v-model="isAllChecked" />
         <span>全选</span>
       </div>
       <div class="option">
@@ -97,6 +96,11 @@
 import { mapState, mapActions } from "vuex";
 export default {
   name: "ShopCart",
+  data() {
+    return {
+      isAllChecked: 1,
+    };
+  },
   computed: {
     ...mapState({
       cartList: (state) => state.shopcart.cartList,
@@ -111,14 +115,12 @@ export default {
         .filter((cart) => cart.isChecked === 1)
         .reduce((p, c) => p + c.skuNum * c.skuPrice, 0);
     },
-    /* isAllChecked: {
-      get() {
-        return this.isAllChecked;
-      },
-      set(newVal) {
-        this.cartList = this.cartList.map((cart) => cart.isChecked == newVal);
-      },
-    }, */
+  },
+  watch: {
+    async isAllChecked(newVal) {
+      await this.$store.commit("UPDATE_CHECKED", newVal);
+      this.getCartList();
+    },
   },
   methods: {
     ...mapActions(["getCartList", "updateCartCount", "updateCheckCart"]),
