@@ -82,8 +82,8 @@ const router = new VueRouter({
       component: Pay,
     },
     {
-      name: "paySuccessart",
-      path: "/paySuccess",
+      name: "paysuccess",
+      path: "/paysuccess",
       component: PaySuccess,
     },
     {
@@ -98,7 +98,7 @@ const router = new VueRouter({
 });
 const permissionPaths = ["/trade", "pay", "center"];
 router.beforeEach((to, from, next) => {
-  if (permissionPaths.indexOf(to.path) > -1 && store.state.user.token) {
+  if (permissionPaths.indexOf(to.path) > -1 && !store.state.user.token) {
     return next("/login");
   }
   next();

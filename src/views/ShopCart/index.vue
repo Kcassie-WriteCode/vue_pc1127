@@ -85,7 +85,8 @@
           <i class="summoney">{{ totalPrice }}</i>
         </div>
         <div class="sumbtn">
-          <router-link class="sum-btn" to="/trade">结算</router-link>
+          <!-- <router-link class="sum-btn" to="/trade">结算</router-link> -->
+          <a class="sum-btn" @click="submit">结算</a>
         </div>
       </div>
     </div>
@@ -116,12 +117,12 @@ export default {
         .reduce((p, c) => p + c.skuNum * c.skuPrice, 0);
     },
   },
-  watch: {
+ /*  watch: {
     async isAllChecked(newVal) {
       await this.$store.commit("UPDATE_CHECKED", newVal);
       this.getCartList();
     },
-  },
+  }, */
   methods: {
     ...mapActions(["getCartList", "updateCartCount", "updateCheckCart"]),
     async updateCount(skuId, skuNum) {
@@ -144,6 +145,9 @@ export default {
       const cart = this.cartList.find((cart) => cart.skuId === skuId);
       cart.isChecked = cart.isChecked === 1 ? 0 : 1;
       this.updateCheckCart({ skuId, isChecked: cart.isChecked });
+    },
+    submit() {
+      this.$router.push("/trade");
     },
   },
   mounted() {
