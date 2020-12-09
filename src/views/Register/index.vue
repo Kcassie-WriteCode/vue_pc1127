@@ -54,7 +54,8 @@
         <!-- <span class="error-msg">错误提示信息</span> -->
       </div>
       <div class="btn">
-        <button @click="submit">完成注册</button>
+        <!-- 自定义事件 -->
+        <Button @click="submit">完成注册</Button>
       </div>
     </div>
 
@@ -79,6 +80,7 @@
 <script>
 import { ValidationProvider, extend } from "vee-validate";
 import { required } from "vee-validate/dist/rules";
+import Button from "@comps/Button";
 extend("required", {
   ...required,
   message: "手机号是必填的！",
@@ -113,6 +115,7 @@ export default {
   },
   components: {
     ValidationProvider,
+    Button,
   },
   methods: {
     async submit() {
