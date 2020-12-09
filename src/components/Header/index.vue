@@ -5,8 +5,9 @@
         <div class="header-top-container-left">
           <p>尚品汇欢迎您!</p>
           <div v-if="$store.state.user.nickName">
-            <span>{{ $store.state.user.nickName }}</span>&nbsp;
-            <button>退出</button>
+            <span>{{ $store.state.user.nickName }}</span
+            >&nbsp;
+            <button @click="passPort">退出</button>
           </div>
           <div v-else>
             <span>请</span>
@@ -37,6 +38,7 @@
 </template>
 
 <script>
+import { reqPassPort } from "@api/pay";
 export default {
   name: "Header",
   data() {
@@ -68,6 +70,14 @@ export default {
       } else {
         this.$router.push(location);
       }
+    },
+    //退出登录
+    async passPort() {
+      await reqPassPort();
+      localStorage.removeItem("token");
+      localStorage.removeItem("nickName");
+      this.$store.state.user.nickName = "";
+      //this.$router.push("/login");
     },
   },
   mounted() {

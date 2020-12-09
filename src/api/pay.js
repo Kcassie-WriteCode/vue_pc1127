@@ -53,3 +53,9 @@ export const reqPayment = (orderId) => {
     url: `/payment/weixin/queryPayStatus/${orderId}`,
   });
 };
+export const reqPassPort = () => {
+  return request({
+    method: "GET",
+    url: "/user/passport/logout",
+  });
+};

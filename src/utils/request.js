@@ -5,9 +5,11 @@ import "nprogress/nprogress.css";
 import getUserTempld from "@utils/getUserTempld";
 import store from "../store";
 const userTempId = getUserTempld();
-
+const url =
+  process.env.NODE_ENV === "development" ? "/" : "http://182.92.128.115/";
+//console.log(process.env.NODE_ENV);
 const instance = axios.create({
-  baseURL: "/api", //公共的基础路径
+  baseURL: `${url}api`, //公共的基础路径
 });
 instance.interceptors.request.use((config) => {
   NProgress.start();

@@ -127,7 +127,8 @@
                 </tbody>
               </table>
             </div>
-            <div class="choose-order">
+             <!-- <Pagination />  -->
+             <div class="choose-order">
               <div class="pagination">
                 <ul>
                   <li class="prev disabled">
@@ -154,7 +155,7 @@
                   <span>&nbsp;&nbsp;&nbsp;&nbsp;共2页&nbsp;</span>
                 </div>
               </div>
-            </div>
+            </div> 
           </div>
           <!--猜你喜欢-->
           <div class="like">
@@ -220,6 +221,7 @@
 
 <script>
 import { reqOrderList } from "@api/pay";
+//import Pagination from "@comps/Pagination";
 export default {
   name: "Center",
   data() {
@@ -228,9 +230,12 @@ export default {
     };
   },
   async mounted() {
-    const orderList = await reqOrderList(3, 5);
+    const orderList = await reqOrderList(3, 3);
     this.orderList = orderList;
   },
+ /*  components: {
+    Pagination,
+  }, */
 };
 </script>
 
