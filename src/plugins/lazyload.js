@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueLazyload from "vue-lazyload";
-import loading from "@assets/images/loading1.gif";
+//import loading from "@assets/images/loading1.gif";
 Vue.use(VueLazyload, {
-  loading: loading,
+  //loading: loading,
+  loading: require("../assets/images/loading1.gif"),
 });

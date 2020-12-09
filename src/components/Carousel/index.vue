@@ -7,7 +7,7 @@
         v-for="carousel in carouselList"
         :key="carousel.id"
       >
-        <img v-lazy="carousel.imgUrl" />
+        <img v-lazy="carousel.imgUrl" class="test" :class="{bigHeight:isList}" />
       </div>
     </div>
     <!-- 如果需要分页器 -->
@@ -25,11 +25,17 @@ import Swiper, { Navigation, Pagination, Autoplay } from "swiper";
 Swiper.use([Navigation, Pagination, Autoplay]);
 export default {
   name: "Carousel",
+  data(){
+    return {
+      isList:false
+    }
+  },
   props: {
     carouselList: {
       type: Array,
       required: true,
     },
+    
   },
   //banners一上来没有数据---watch方法检测数据发生变化并且渲染成dom
   //判断如果之前没有new swiper就直接new swiper
@@ -68,6 +74,12 @@ export default {
   mounted() {
     //一上来就有数据，证明也已经渲染好了dom元素---mounted
     //判断如果有数据就直接new swiper
+    if(this.$parent.$el.className === 'list-container'){
+      this.isList=true
+    }else{
+      this.isList = false
+    }
+
     if (!this.carouselList.length) return;
     this.initSwiper();
   },
@@ -75,4 +87,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.test{
+  width: 330px;
+  height:360px;
+}
+.bigHeight{
+  width: 720px;
+  height: 455px;
+}
 </style>

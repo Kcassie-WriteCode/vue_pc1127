@@ -24,7 +24,7 @@
                   {{ keyword }}
                 </li>
               </ul>
-              <img v-lazy="floor.imgUrl" />
+              <img :src="floor.imgUrl" />
             </div>
             <div class="floorBanner">
               <Carousel
@@ -34,22 +34,22 @@
             <div class="split">
               <span class="floor-x-line"></span>
               <div class="floor-conver-pit">
-                <img v-lazy="floor.recommendList[0]" />
+                <img :src="floor.recommendList[0]" />
               </div>
               <div class="floor-conver-pit">
-                <img v-lazy="floor.recommendList[1]" />
+                <img :src="floor.recommendList[1]" />
               </div>
             </div>
             <div class="split center">
-              <img v-lazy="floor.bigImg" />
+              <img :src="floor.bigImg" />
             </div>
             <div class="split">
               <span class="floor-x-line"></span>
               <div class="floor-conver-pit">
-                <img v-lazy="floor.recommendList[2]" />
+                <img :src="floor.recommendList[2]" />
               </div>
               <div class="floor-conver-pit">
-                <img v-lazy="floor.recommendList[3]" />
+                <img :src="floor.recommendList[3]" />
               </div>
             </div>
           </div>
