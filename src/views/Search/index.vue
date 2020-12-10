@@ -277,10 +277,6 @@ export default {
       this.options.order = `${order}:${orderType}`;
       this.updateProductList();
     },
-   /*  handleSizeChange(pageSize) {
-      this.options.pageSize = pageSize;
-      this.updateProductList();
-    }, */
     handleCurrentChange(pageNo) {
       this.options.pageNo = pageNo;
       //因为前面设置默认pageNo为1

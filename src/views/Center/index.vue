@@ -79,7 +79,9 @@
                   <tr>
                     <th colspan="5">
                       <span class="ordertitle"
-                        >{{record.createTime}}订单编号：{{ record.outTradeNo }}
+                        >{{ record.createTime }}订单编号：{{
+                          record.outTradeNo
+                        }}
                         <span class="pull-right delete"
                           ><img src="./images/delete.png" /></span
                       ></span>
@@ -88,7 +90,7 @@
                 </thead>
                 <tbody>
                   <tr
-                    v-for="orderDetail in record.orderDetailList"
+                    v-for="(orderDetail, index) in record.orderDetailList"
                     :key="orderDetail.id"
                   >
                     <td width="60%">
@@ -100,68 +102,61 @@
                         <a href="#" class="block-text">{{
                           orderDetail.skuName
                         }}</a>
-                        <span>x{{orderDetail.skuNum}}</span>
+                        <span>x{{ orderDetail.skuNum }}</span>
                         <a href="#" class="service">售后申请</a>
                       </div>
                     </td>
-                   
-                    <td rowspan='record.orderDetailList.length'  width="8%" class="center">
-                      {{ record.consignee }}
-                    </td>
-                    <td rowspan="record.orderDetailList.length"  width="13%" class="center">
-                      <ul class="unstyled">
-                        <li>总金额¥{{ record.totalAmount }}</li>
-                        <li>在线支付</li>
-                      </ul>
-                    </td>
-                    <td rowspan="record.orderDetailList.length" width="8%" class="center">
-                      <a href="#" class="btn">{{ record.orderStatusName }} </a>
-                    </td>
-                    <td rowspan="record.orderDetailList.length" width="13%" class="center">
-                      <ul class="unstyled">
-                        <li>
-                          <a href="mycomment.html" target="_blank">评价|晒单</a>
-                        </li>
-                      </ul>
-                    </td>
+                    <template v-if="index === 0">
+                      <td
+                        :rowspan="record.orderDetailList.length"
+                        width="8%"
+                        class="center"
+                      >
+                        {{ record.consignee }}
+                      </td>
+                      <td
+                        :rowspan="record.orderDetailList.length"
+                        width="13%"
+                        class="center"
+                      >
+                        <ul class="unstyled">
+                          <li>总金额¥{{ record.totalAmount }}</li>
+                          <li>在线支付</li>
+                        </ul>
+                      </td>
+                      <td
+                        :rowspan="record.orderDetailList.length"
+                        width="8%"
+                        class="center"
+                      >
+                        <a href="#" class="btn"
+                          >{{ record.orderStatusName }}
+                        </a>
+                      </td>
+                      <td
+                        :rowspan="record.orderDetailList.length"
+                        width="13%"
+                        class="center"
+                      >
+                        <ul class="unstyled">
+                          <li>
+                            <a href="mycomment.html" target="_blank"
+                              >评价|晒单</a
+                            >
+                          </li>
+                        </ul>
+                      </td>
+                    </template>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <!--  <Pagination
-            :current-page="1"
-            :pager-count="7"
-            :page-size="5"
-            :total="orderList.length"
-          /> -->
-             <div class="choose-order">
-              <div class="pagination">
-                <ul>
-                  <li class="prev disabled">
-                    <a href="javascript:">«上一页</a>
-                  </li>
-                  <li class="page actived">
-                    <a href="javascript:">1</a>
-                  </li>
-                  <li class="page">
-                    <a href="javascript:">2</a>
-                  </li>
-                  <li class="page">
-                    <a href="javascript:">3</a>
-                  </li>
-                  <li class="page">
-                    <a href="javascript:">4</a>
-                  </li>
-
-                  <li class="next disabled">
-                    <a href="javascript:">下一页»</a>
-                  </li>
-                </ul>
-                <div>
-                  <span>&nbsp;&nbsp;&nbsp;&nbsp;共2页&nbsp;</span>
-                </div>
-              </div>
-            </div> 
+            <Pagination
+              :current-page="page"
+              :page-size="limit"
+              :total="orderList.total"
+              @current-change="getOrderList"
+            />
           </div>
           <!--猜你喜欢-->
           <div class="like">
@@ -227,21 +222,30 @@
 
 <script>
 import { reqOrderList } from "@api/pay";
-//import Pagination from "@comps/Pagination";
+import Pagination from "@comps/Pagination";
 export default {
   name: "Center",
   data() {
     return {
       orderList: {},
+      page: 1,
+      limit: 3,
     };
   },
-  async mounted() {
-    const orderList = await reqOrderList(3, 3);
-    this.orderList = orderList;
+  mounted() {
+    this.getOrderList();
   },
-   /* components: {
+  //分开写可以优化，一个函数有两个功能
+  methods: {
+    async getOrderList(page = 1) {
+      this.page = page;
+      const orderList = await reqOrderList(this.page, this.limit);
+      this.orderList = orderList;
+    },
+  },
+  components: {
     Pagination,
-  },  */
+  },
 };
 </script>
 

@@ -8,6 +8,7 @@
         v-for="address in trade.userAddressList"
         :key="address.id"
       >
+      <!-- 点击就修改选择地址的id ,样式设置为选择上的地址-->
         <span
           :class="{ username: true, selected: address.id === selectAddressId }"
           @click="selectAddressId = address.id"
@@ -137,11 +138,11 @@ export default {
         : {};
     },
   },
-  //发送请求，得到订单信息
+  //一上来就发送请求，得到订单信息，展示数据
   async mounted() {
     const trade = await reqTrade();
     this.trade = trade;
-    this.selectAddressId = trade.userAddressList.find(
+    this.selectAddressId = this.trade.userAddressList.find(
       (address) => address.isDefault === "1"
     ).id;
   },
@@ -150,6 +151,7 @@ export default {
     async submit() {
       const { consignee, tradeNo, detailArrayList } = this.trade;
       const { phoneNum, userAddress } = this.selectAddress;
+      //提交成功，生成订单号
       const orderId = await reqSubmitOrder({
         tradeNo,
         consignee: consignee,
@@ -159,6 +161,7 @@ export default {
         orderComment: this.orderComment,
         orderDetailList: detailArrayList,
       });
+      //提交订单成功，就跳转到支付页面，携带订单号，选择支付方式
       this.$router.push({
         name: "pay",
         query: {

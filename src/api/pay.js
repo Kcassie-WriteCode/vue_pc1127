@@ -1,12 +1,12 @@
 import request from "@utils/request";
-// 获取订单信息列表
+// 获取订单交易页信息//trade
 export const reqTrade = () => {
   return request({
     method: "GET",
     url: "/order/auth/trade",
   });
 };
-//获取提交订单信息
+//提交订单
 export const reqSubmitOrder = ({
   tradeNo,
   consignee,
@@ -53,6 +53,7 @@ export const reqPayment = (orderId) => {
     url: `/payment/weixin/queryPayStatus/${orderId}`,
   });
 };
+//退出登录
 export const reqPassPort = () => {
   return request({
     method: "GET",

@@ -33,7 +33,6 @@
       下一页
     </button>
     <button>总数:{{ total }}条</button>
-   <!--  <button>每页条数:{{ myPageSize }}</button> -->
   </div>
 </template>
 
