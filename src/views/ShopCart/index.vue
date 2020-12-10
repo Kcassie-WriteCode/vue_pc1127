@@ -58,7 +58,7 @@
             <span class="sum">{{ cart.skuNum * cart.cartPrice }}</span>
           </li>
           <li class="cart-list-con7">
-            <a href="#none" class="sindelet">删除</a>
+            <a href="#none" class="sindelet" @click="del(cart.skuId)">删除</a>
             <br />
             <a href="#none">移到收藏</a>
           </li>
@@ -97,11 +97,6 @@
 import { mapState, mapActions } from "vuex";
 export default {
   name: "ShopCart",
-  data() {
-    return {
-      isAllChecked: 1,
-    };
-  },
   computed: {
     ...mapState({
       cartList: (state) => state.shopcart.cartList,
@@ -116,15 +111,29 @@ export default {
         .filter((cart) => cart.isChecked === 1)
         .reduce((p, c) => p + c.skuNum * c.skuPrice, 0);
     },
-  },
- /*  watch: {
-    async isAllChecked(newVal) {
-      await this.$store.commit("UPDATE_CHECKED", newVal);
-      this.getCartList();
+    isAllChecked: {
+      //通过选中修改全选
+      get() {
+        return (
+          this.cartList.every((cart) => cart.isChecked) &&
+          this.cartList.length > 0
+        );
+      },
+      //通过全选修改选中
+      async set(newVal) {
+        await this.updateAllChecked(newVal ? 1 : 0);
+        this.getCartList();
+      },
     },
-  }, */
+  },
   methods: {
-    ...mapActions(["getCartList", "updateCartCount", "updateCheckCart"]),
+    ...mapActions([
+      "getCartList",
+      "updateCartCount",
+      "updateCheckCart",
+      "deleteCart",
+      "updateAllChecked",
+    ]),
     async updateCount(skuId, skuNum) {
       await this.updateCartCount({ skuId, skuNum });
     },
@@ -141,10 +150,16 @@ export default {
       if (e.target.value === skuNum) return;
       this.updateCartCount({ skuId, skuNum: e.target.value - skuNum });
     },
+    //更新选中状态的商品
     updateCheck(skuId) {
       const cart = this.cartList.find((cart) => cart.skuId === skuId);
       cart.isChecked = cart.isChecked === 1 ? 0 : 1;
       this.updateCheckCart({ skuId, isChecked: cart.isChecked });
+    },
+    //删除商品
+    del(skuId) {
+      this.deleteCart(skuId);
+      this.getCartList();
     },
     submit() {
       this.$router.push("/trade");

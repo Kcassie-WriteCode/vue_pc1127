@@ -2,7 +2,7 @@ import {
   reqCartList,
   reqAddToCart,
   reqCheckCart,
-  // reqDeleteCart,
+  reqDeleteCart,
 } from "@api/shopcart";
 export default {
   state: {
@@ -10,17 +10,40 @@ export default {
   },
   getters: {},
   actions: {
+    //获取购物车商品列表
     async getCartList({ commit }) {
       const cartList = await reqCartList();
       commit("GET_CART_LIST", cartList);
     },
+    //更新购物车商品的数量，增加或者减少
     async updateCartCount({ commit }, { skuId, skuNum }) {
       await reqAddToCart(skuId, skuNum);
       commit("UPDATE_CART_COUNT", { skuId, skuNum });
     },
+    //更新商品选中状态
     async updateCheckCart({ commit }, { skuId, isChecked }) {
       await reqCheckCart(skuId, isChecked);
       console.log(commit);
+    },
+    //删除商品
+    async deleteCart({ commit }, skuId) {
+      const cart = await reqDeleteCart(skuId);
+      commit("DELETE_CART", cart);
+    },
+    //全选和选中状态处理
+    async updateAllChecked({ state, commit, dispatch }, newVal) {
+      let promises = [];
+      state.cartList.forEach((cart) => {
+        if (cart.isChecked === newVal) return;
+        const promise =dispatch("updateCheckCart", {
+          skuId: cart.skuId,
+          newVal,
+        });
+        promises.push(promise);
+        console.log(promises)
+      });
+      console.log(commit);
+      return Promise.all(promises);      
     },
   },
   mutations: {
@@ -35,9 +58,8 @@ export default {
         return cart;
       });
     },
-    UPDATE_CHECKED(state, newVal) {
-      newVal = newVal === true ? 1 : 0;
-      state.cartList = state.cartList.map((cart) => (cart.isChecked = newVal));
+    DELETE_CART(state, cart) {
+      state.cartList = state.cartList.filter((item) => item != cart);
     },
   },
 };

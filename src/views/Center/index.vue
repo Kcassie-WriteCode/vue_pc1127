@@ -79,7 +79,7 @@
                   <tr>
                     <th colspan="5">
                       <span class="ordertitle"
-                        >2017-02-11 11:59订单编号：{{ record.outTradeNo }}
+                        >{{record.createTime}}订单编号：{{ record.outTradeNo }}
                         <span class="pull-right delete"
                           ><img src="./images/delete.png" /></span
                       ></span>
@@ -100,23 +100,24 @@
                         <a href="#" class="block-text">{{
                           orderDetail.skuName
                         }}</a>
-                        <span>x1</span>
+                        <span>x{{orderDetail.skuNum}}</span>
                         <a href="#" class="service">售后申请</a>
                       </div>
                     </td>
-                    <td :rowspan="record.skuNum" width="8%" class="center">
+                   
+                    <td rowspan='record.orderDetailList.length'  width="8%" class="center">
                       {{ record.consignee }}
                     </td>
-                    <td :rowspan="record.skuNum" width="13%" class="center">
+                    <td rowspan="record.orderDetailList.length"  width="13%" class="center">
                       <ul class="unstyled">
                         <li>总金额¥{{ record.totalAmount }}</li>
                         <li>在线支付</li>
                       </ul>
                     </td>
-                    <td :rowspan="record.skuNum" width="8%" class="center">
+                    <td rowspan="record.orderDetailList.length" width="8%" class="center">
                       <a href="#" class="btn">{{ record.orderStatusName }} </a>
                     </td>
-                    <td :rowspan="record.skuNum" width="13%" class="center">
+                    <td rowspan="record.orderDetailList.length" width="13%" class="center">
                       <ul class="unstyled">
                         <li>
                           <a href="mycomment.html" target="_blank">评价|晒单</a>
@@ -127,7 +128,12 @@
                 </tbody>
               </table>
             </div>
-             <!-- <Pagination />  -->
+            <!--  <Pagination
+            :current-page="1"
+            :pager-count="7"
+            :page-size="5"
+            :total="orderList.length"
+          /> -->
              <div class="choose-order">
               <div class="pagination">
                 <ul>
@@ -233,9 +239,9 @@ export default {
     const orderList = await reqOrderList(3, 3);
     this.orderList = orderList;
   },
- /*  components: {
+   /* components: {
     Pagination,
-  }, */
+  },  */
 };
 </script>
 

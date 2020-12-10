@@ -133,7 +133,6 @@
             @current-change="handleCurrentChange"
             :current-page="options.pageNo"
             :pager-count="7"
-            :page-size="5"
             :total="total"
           />
           <!-- <el-pagination
@@ -170,7 +169,7 @@ export default {
         keyword: "",
         order: "1:desc",
         pageNo: 1,
-        pageSize: 10,
+        pageSize: 5,
         props: [],
         trademark: "",
       },
@@ -188,6 +187,7 @@ export default {
   },
   methods: {
     ...mapActions(["getProductList"]),
+    //更新商品列表
     updateProductList(pageNo = 1) {
       const { searchText: keyword } = this.$route.params;
       const {
@@ -277,10 +277,10 @@ export default {
       this.options.order = `${order}:${orderType}`;
       this.updateProductList();
     },
-    // handleSizeChange(pageSize) {
-    //   this.options.pageSize = pageSize;
-    //   this.updateProductList();
-    // },
+   /*  handleSizeChange(pageSize) {
+      this.options.pageSize = pageSize;
+      this.updateProductList();
+    }, */
     handleCurrentChange(pageNo) {
       this.options.pageNo = pageNo;
       //因为前面设置默认pageNo为1
